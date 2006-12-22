@@ -1,5 +1,4 @@
-
-package icecube.daq.log;
+package icecube.daq.log.test;
 
 import java.net.UnknownHostException;
 import java.io.*;
@@ -12,7 +11,7 @@ import icecube.daq.log.DAQLogAppender;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 
-class TestDAQLogAppender {
+class DAQLogAppenderTest {
     public static final void main(String[] args) throws Exception {
 	String hostname = "localhost";
 	int portnum     = 6666;
@@ -23,7 +22,7 @@ class TestDAQLogAppender {
 	
 	System.out.println("writing to localhost port " + portnum);
 
-	Log log = LogFactory.getLog(TestDAQLogAppender.class);
+	Log log = LogFactory.getLog(DAQLogAppenderTest.class);
 
 	BasicConfigurator.resetConfiguration();
 	try {

@@ -15,19 +15,4 @@
   <version>1.0.0-SNAPSHOT</version>
   <name>daq-log</name>
 
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>test/java</testSourceDirectory>
-    <resources>
-      <resource>
-        <directory>resources/jar</directory>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>resources/test/jar</directory>
-      </testResource>
-    </testResources>
-  </build>
-
 </project>
