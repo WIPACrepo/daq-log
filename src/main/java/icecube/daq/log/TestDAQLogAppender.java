@@ -11,7 +11,7 @@ import icecube.daq.log.DAQLogAppender;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 
-class DAQLogAppenderTest {
+class TestDAQLogAppender {
     public static final void main(String[] args) throws Exception {
 	String hostname = "localhost";
 	int portnum     = 6666;
@@ -22,7 +22,7 @@ class DAQLogAppenderTest {
 	
 	System.out.println("writing to localhost port " + portnum);
 
-	Log log = LogFactory.getLog(DAQLogAppenderTest.class);
+	Log log = LogFactory.getLog(TestDAQLogAppender.class);
 
 	BasicConfigurator.resetConfiguration();
 	try {
