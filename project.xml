@@ -1,0 +1,21 @@
+<project>
+	<name>daqLog</name>
+	<packages default="icecube.daq.log">
+		icecube.daq.log
+	</packages>
+	<uses>
+		<libs></libs>
+		<tools>
+			commons-logging-api.jar
+		</tools>
+	</uses>
+	<test>
+		<uses>
+			<libs></libs>
+			<tools>
+				log4j.jar
+				junit.jar
+			</tools>
+		</uses>
+	</test>
+</project>
