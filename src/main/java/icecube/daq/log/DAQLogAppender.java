@@ -85,6 +85,5 @@ public class DAQLogAppender implements Appender {
 		throw new Error("Unimplemented"); 
 	}
 
+	public Level getLevel()                 { return minLevel; }
 }
-
-
