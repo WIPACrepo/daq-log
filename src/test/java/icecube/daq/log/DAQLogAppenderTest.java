@@ -234,7 +234,7 @@ public class DAQLogAppenderTest
         }
     }
 
-    public void XXXtestLog()
+    public void testLog()
     {
 	sendMsg(Level.INFO, "This is a test of logging.");
 	sendMsg(Level.INFO, "This is test 2 of logging.");
