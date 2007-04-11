@@ -1,10 +1,12 @@
 package icecube.daq.log;
 
 import icecube.daq.log.DAQLogAppender;
+import icecube.daq.log.LoggingOutputStream;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -106,6 +108,7 @@ class LogReader
                 }
 
                 String fullMsg = new String(buf, 0, packet.getLength());
+System.out.println(fullMsg);
 
                 String errMsg = null;
                 if (expList.isEmpty()) {
@@ -132,6 +135,9 @@ public class DAQLogAppenderTest
     extends TestCase
 {
     private static final Log LOG = LogFactory.getLog(DAQLogAppenderTest.class);
+
+    private static final PrintStream STDOUT = System.out;
+    private static final PrintStream STDERR = System.err;
 
     private static final String LOGHOST = "localhost";
     private static final int LOGPORT = 6666;
@@ -190,12 +196,21 @@ public class DAQLogAppenderTest
 
     protected void tearDown()
     {
+        if (!STDOUT.equals(System.out)) {
+            System.setOut(STDOUT);
+        }
+        if (!STDERR.equals(System.err)) {
+            System.setErr(STDERR);
+        }
+
         appender.close();
         logRdr.close();
 
         if (logRdr.hasError()) {
-            fail("LogReader had errors; first error is: " +
-                 logRdr.getNextError());
+            fail(logRdr.getNextError());
+        }
+        if (!logRdr.isFinished()) {
+            fail("Didn't see all log messages");
         }
     }
 
@@ -219,7 +234,7 @@ public class DAQLogAppenderTest
         }
     }
 
-    public void testLog()
+    public void XXXtestLog()
     {
 	sendMsg(Level.INFO, "This is a test of logging.");
 	sendMsg(Level.INFO, "This is test 2 of logging.");
@@ -234,6 +249,19 @@ public class DAQLogAppenderTest
 	    sendMsg(Level.INFO, "This is test " + i + " of logging.");
             waitForLogMessages();
 	}
+    }
+
+    public void testRedirect()
+    {
+        Log errLog = LogFactory.getLog("STDERR");
+        LoggingOutputStream logStream =
+            new LoggingOutputStream(errLog, Level.ERROR);
+        System.setErr(new PrintStream(logStream));
+
+        String errMsg = "Error";
+        logRdr.addExpected(errMsg);
+        System.err.println(errMsg);
+        waitForLogMessages();
     }
 
     /**
