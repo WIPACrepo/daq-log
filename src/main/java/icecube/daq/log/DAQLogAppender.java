@@ -57,7 +57,7 @@ public class DAQLogAppender implements Appender {
 	/** Adapted from MockAppender */
 	public void doAppend(LoggingEvent evt) {
 		if (evt.getLevel().isGreaterOrEqual(minLevel)) {
-			String date = new Date().toString();
+			String date = new Date(evt.getStartTime()).toString();
 			String entry = evt.getLoggerName() + "-" +
 				evt.getThreadName() + " " +
 			evt.getLevel() + " [" + date +	
