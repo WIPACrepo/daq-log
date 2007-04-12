@@ -2,6 +2,7 @@ package icecube.daq.log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import org.apache.commons.logging.Log;
 
@@ -12,13 +13,22 @@ import org.apache.log4j.Level;
  *
  * From http://blogs.sun.com/nickstephen/entry/java_redirecting_system_out_and
  */
-class LoggingOutputStream
+public class LoggingOutputStream
     extends ByteArrayOutputStream
 {
-    private String lineSeparator;
+    /** Original standard error stream */
+    private static final PrintStream STDERR = System.err;
+
+    /** Maximum number of stack frame increases allowed before giving up */
+    private static final int MAX_INCREASES = 12;
 
     private Log logger;
     private Level level;
+
+    private String lineSeparator;
+
+    private int prevFrames;
+    private int numIncreases;
 
     /**
      * Constructor
@@ -33,23 +43,6 @@ class LoggingOutputStream
         this.level = level;
 
         lineSeparator = System.getProperty("line.separator");
-    }
-
-    public void write(byte[] b)
-        throws IOException
-    {
-        super.write(b);
-            flush();
-    }
-
-    public void write(byte[] b, int off, int len)
-    {
-        super.write(b, off, len);
-        try {
-            flush();
-        } catch (IOException ioe) {
-            throw new Error("Cannot write", ioe);
-        }
     }
 
     /**
@@ -72,7 +65,10 @@ class LoggingOutputStream
             super.reset();
 
             if (record.length() > 0) {
-                if (level.isGreaterOrEqual(Level.FATAL)) {
+                if (isLooping()) {
+                    STDERR.println(record);
+                    STDERR.println("WARNING!  LoggingOutputStream is looping");
+                } if (level.isGreaterOrEqual(Level.FATAL)) {
                     logger.fatal(record);
                 } else if (level.isGreaterOrEqual(Level.ERROR)) {
                     logger.error(record);
@@ -83,6 +79,50 @@ class LoggingOutputStream
                 } else {
                     logger.debug(record);
                 }
+            }
+        }
+    }
+
+    private synchronized boolean isLooping()
+    {
+        boolean looping = false;
+
+        final int curFrames = Thread.currentThread().countStackFrames();
+        if (curFrames <= prevFrames) {
+            numIncreases = 0;
+        } else {
+            numIncreases++;
+            looping = numIncreases > MAX_INCREASES;
+        }
+
+        prevFrames = curFrames;
+
+        return looping;
+    }
+
+    public void write(byte[] b)
+        throws IOException
+    {
+        write(b, 0, b.length);
+    }
+
+    public void write(byte[] b, int off, int len)
+    {
+        super.write(b, off, len);
+
+        boolean needFlush = false;
+        for (int i = off; i < len; i++) {
+            if (b[i] == '\n') {
+                needFlush = true;
+                break;
+            }
+        }
+
+        if (needFlush) {
+            try {
+                flush();
+            } catch (IOException ioe) {
+                throw new Error("Cannot write", ioe);
             }
         }
     }
