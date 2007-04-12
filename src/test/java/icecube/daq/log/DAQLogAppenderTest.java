@@ -108,7 +108,6 @@ class LogReader
                 }
 
                 String fullMsg = new String(buf, 0, packet.getLength());
-System.out.println(fullMsg);
 
                 String errMsg = null;
                 if (expList.isEmpty()) {
