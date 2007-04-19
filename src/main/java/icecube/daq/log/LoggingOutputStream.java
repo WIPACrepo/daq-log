@@ -53,7 +53,7 @@ public class LoggingOutputStream
     public void flush()
         throws IOException
     {
-        synchronized(this) {
+        synchronized (this) {
             super.flush();
 
             String record = this.toString();
