@@ -60,7 +60,7 @@ class LoggingSocket
         msgBuf.append(message);
 
         if (throwable != null) {
-            if (byteOut != null) {
+            if (byteOut == null) {
                 byteOut = new ByteArrayOutputStream();
                 bytePrint = new PrintStream(byteOut);
             } else {
