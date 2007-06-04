@@ -50,6 +50,11 @@ class LogReader
         return errorList.remove(0);
     }
 
+    int getNumberOfExpectedMessages()
+    {
+        return expList.size();
+    }
+
     int getPort()
     {
         return port;

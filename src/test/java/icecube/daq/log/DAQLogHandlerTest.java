@@ -151,12 +151,9 @@ public class DAQLogHandlerTest
         handler.close();
         logRdr.close();
 
-        if (logRdr.hasError()) {
-            fail(logRdr.getNextError());
-        }
-        if (!logRdr.isFinished()) {
-            fail("Didn't see all log messages");
-        }
+        assertFalse(logRdr.getNextError(), logRdr.hasError());
+        assertEquals("Not all log messages were received",
+                     0, logRdr.getNumberOfExpectedMessages());
     }
 
     private void waitForLogMessages()
@@ -171,12 +168,9 @@ public class DAQLogHandlerTest
                 // ignore interrupts
             }
         }
-        if (logRdr.hasError()) {
-            fail(logRdr.getNextError());
-        }
-        if (!logRdr.isFinished()) {
-            fail("Didn't see all log messages");
-        }
+        assertFalse(logRdr.getNextError(), logRdr.hasError());
+        assertEquals("Not all log messages were received",
+                     0, logRdr.getNumberOfExpectedMessages());
     }
 
     public void testLog()
