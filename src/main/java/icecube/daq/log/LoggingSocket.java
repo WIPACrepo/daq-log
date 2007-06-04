@@ -84,6 +84,10 @@ class LoggingSocket
 
     boolean isConnected(String hostname, int port)
     {
+        if (socket == null) {
+            return false;
+        }
+
         InetAddress addr;
         try {
             addr = InetAddress.getByName(hostname);
@@ -91,7 +95,7 @@ class LoggingSocket
             return false;
         }
 
-        if (!addr.equals(socket.getInetAddress())) {
+        if (addr == null || !addr.equals(socket.getInetAddress())) {
             return false;
         }
 
