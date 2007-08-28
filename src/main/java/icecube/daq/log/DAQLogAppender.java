@@ -3,6 +3,9 @@ package icecube.daq.log;
 import java.io.*;
 import java.net.*;
 import java.util.Date;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Formatter;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
@@ -47,10 +50,10 @@ public class DAQLogAppender implements Appender {
 				throwable =
 				   evt.getThrowableInformation().getThrowable();
 			}
-
+			Calendar now = Calendar.getInstance();
 			socket.write(evt.getLoggerName(), evt.getThreadName(),
                                      evt.getLevel().toString(),
-                                     new Date().toString(),
+                                     String.format("%tF %tT.%tL", now, now, now),
                                      evt.getMessage().toString(), throwable);
 		}
 	}

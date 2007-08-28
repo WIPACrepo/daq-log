@@ -54,7 +54,7 @@ class LoggingSocket
         }
 
         if (date != null) {
-            msgBuf.append(" [").append(date).append(']');
+            msgBuf.append(" [").append(date).append("] ");
         }
 
         msgBuf.append(message);
