@@ -3,6 +3,7 @@ package icecube.daq.log;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import java.util.logging.Handler;
@@ -30,9 +31,11 @@ public class DAQLogHandler
     public void publish(LogRecord rec) {
         if (isLoggable(rec)) {
             String threadName = "Thread#" + rec.getThreadID();
-            String dateStr = new Date(rec.getMillis()).toString();
+            Calendar now = Calendar.getInstance();
+            now.setTime(new Date(rec.getMillis()));
             socket.write(rec.getLoggerName(), threadName,
-                         rec.getLevel().toString(), dateStr,
+                         rec.getLevel().toString(),
+                         String.format("%tF %tT.%tL", now, now, now),
                          rec.getMessage(), rec.getThrown());
         }
     }
