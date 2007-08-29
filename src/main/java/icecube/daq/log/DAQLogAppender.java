@@ -51,6 +51,7 @@ public class DAQLogAppender implements Appender {
 				   evt.getThrowableInformation().getThrowable();
 			}
 			Calendar now = Calendar.getInstance();
+                        now.setTime(new Date(evt.timeStamp));
 			socket.write(evt.getLoggerName(), evt.getThreadName(),
                                      evt.getLevel().toString(),
                                      String.format("%tF %tT.%tL", now, now, now),
