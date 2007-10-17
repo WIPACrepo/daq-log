@@ -1,9 +1,11 @@
-
 package icecube.daq.log;
 
 import java.io.*;
 import java.net.*;
 import java.util.Date;
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Formatter;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
@@ -20,10 +22,7 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class DAQLogAppender implements Appender {
 
-	private String remoteHost;
-	private int    remotePort;
-	private InetAddress remoteAddress = null;
-	private DatagramSocket socket = null;
+	private LoggingSocket socket;
 
 	/** Minimum log level */
 	private Level minLevel; 
@@ -33,43 +32,30 @@ public class DAQLogAppender implements Appender {
 	throws UnknownHostException, SocketException
 	{
 		this.minLevel   = minLevel;
-		this.remoteHost = hostname;
-		this.remotePort = port;
-		this.remoteAddress = InetAddress.getByName(this.remoteHost);
-		this.socket = new DatagramSocket();
-		socket.connect(this.remoteAddress, this.remotePort);
+
+		socket = new LoggingSocket(hostname, port);
 	}
 
 	public boolean requiresLayout()      { return false; }
 
-	public void close() { /* Close socket here eventually */ }
-
-	/** Try to write msg to sock; do nothing if fails */
-	private void writeEntry(DatagramSocket sock, String msg) {
-		byte[] buf = msg.getBytes();
-		DatagramPacket packet = new DatagramPacket(buf, buf.length);
-		try {
-			socket.send(packet);
-		} catch(IOException e) {
-		}
-	}
+	public void close() { socket.close(); }
 
 	/** Adapted from MockAppender */
 	public void doAppend(LoggingEvent evt) {
-		if (evt.getLevel().toInt() >= minLevel.toInt()) {
-			String date = new Date().toString();
-			String entry = evt.getLoggerName() + "-" +
-				evt.getThreadName() + " " +
-			evt.getLevel() + " [" + date +	
-			"] " + evt.getMessage();
-
-			writeEntry(socket, entry);
-
-			String[] stack = evt.getThrowableStrRep();
-			for (int i = 0; stack != null && i < stack.length; i++) {
-				entry = "> " + stack[i];
-				writeEntry(socket, entry);
+		if (evt.getLevel().isGreaterOrEqual(minLevel)) {
+			Throwable throwable;
+			if (evt.getThrowableInformation() == null) {
+				throwable = null;
+			} else {
+				throwable =
+				   evt.getThrowableInformation().getThrowable();
 			}
+			Calendar now = Calendar.getInstance();
+                        now.setTime(new Date(evt.timeStamp));
+			socket.write(evt.getLoggerName(), evt.getThreadName(),
+                                     evt.getLevel().toString(),
+                                     String.format("%tF %tT.%tL", now, now, now),
+                                     evt.getMessage().toString(), throwable);
 		}
 	}
 
@@ -85,6 +71,10 @@ public class DAQLogAppender implements Appender {
 		throw new Error("Unimplemented"); 
 	}
 
+	public Level getLevel()                 { return minLevel; }
+
+    public boolean isConnected(String host, int port)
+    {
+        return socket.isConnected(host, port);
+    }
 }
-
-
