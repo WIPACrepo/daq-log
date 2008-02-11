@@ -2,10 +2,8 @@ package icecube.daq.log;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
 import java.util.Calendar;
 import java.util.Date;
-
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;

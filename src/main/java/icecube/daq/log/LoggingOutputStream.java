@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.commons.logging.Log;
-
 import org.apache.log4j.Level;
 
 /**
