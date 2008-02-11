@@ -1,19 +1,15 @@
 package icecube.daq.log;
 
-import java.io.*;
-import java.net.*;
-import java.util.Date;
-import java.text.DateFormat;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Calendar;
-import java.util.Formatter;
+import java.util.Date;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
-
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 
 /**
@@ -25,10 +21,10 @@ public class DAQLogAppender implements Appender {
 	private LoggingSocket socket;
 
 	/** Minimum log level */
-	private Level minLevel; 
+	private Level minLevel;
 
 	/** General DAQLogAppender constructor */
-	public DAQLogAppender(Level minLevel, String hostname, int port) 
+	public DAQLogAppender(Level minLevel, String hostname, int port)
 	throws UnknownHostException, SocketException
 	{
 		this.minLevel   = minLevel;
@@ -67,8 +63,8 @@ public class DAQLogAppender implements Appender {
 	public String getName()                 { throw new Error("Unimplemented"); }
 	public void setLayout(Layout layout)    { throw new Error("Unimplemented"); }
 	public void setName(String name)        { throw new Error("Unimplemented"); }
-	public void setErrorHandler(ErrorHandler errorHandler) { 
-		throw new Error("Unimplemented"); 
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		throw new Error("Unimplemented");
 	}
 
 	public Level getLevel()                 { return minLevel; }

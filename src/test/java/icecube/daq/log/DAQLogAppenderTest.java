@@ -1,8 +1,5 @@
 package icecube.daq.log;
 
-import icecube.daq.log.DAQLogAppender;
-import icecube.daq.log.LoggingOutputStream;
-
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -12,7 +9,6 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 

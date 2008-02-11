@@ -1,11 +1,7 @@
 package icecube.daq.log;
 
-import icecube.daq.log.DAQLogHandler;
-import icecube.daq.log.LoggingOutputStream;
-
 import java.io.IOException;
 import java.io.PrintStream;
-
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
