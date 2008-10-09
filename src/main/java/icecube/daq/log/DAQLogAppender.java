@@ -1,5 +1,7 @@
 package icecube.daq.log;
 
+import icecube.daq.common.IDAQAppender;
+
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Calendar;
@@ -16,7 +18,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * Appender for IceCube pDAQ python UDP socket consumer
  * @author John Jacobsen, NPX Designs, Inc. for UW-Madison IceCube.
  */
-public class DAQLogAppender implements Appender {
+public class DAQLogAppender implements IDAQAppender {
 
 	private LoggingSocket socket;
 
