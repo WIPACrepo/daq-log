@@ -99,7 +99,7 @@ public class DAQLogHandlerTest
         org.apache.log4j.BasicConfigurator.configure(new TinyAppender());
 
         try {
-            logRdr = new LogReader();
+            logRdr = new LogReader("log");
         } catch (IOException ioe) {
             System.err.println("Couldn't create log reader");
             ioe.printStackTrace();
@@ -107,8 +107,8 @@ public class DAQLogHandlerTest
         }
 
         try {
-            handler = new DAQLogHandler(Level.INFO, "localhost",
-                                        logRdr.getPort());
+            handler = new DAQLogHandler("xxx", Level.INFO, "localhost",
+                                        logRdr.getPort(), null, 0);
         } catch (Exception ex) {
             System.err.println("Couldn't create handler");
             ex.printStackTrace();
@@ -147,7 +147,7 @@ public class DAQLogHandlerTest
         handler.close();
         logRdr.close();
 
-        assertFalse(logRdr.getNextError(), logRdr.hasError());
+        if (logRdr.hasError()) fail(logRdr.getNextError());
         assertEquals("Not all log messages were received",
                      0, logRdr.getNumberOfExpectedMessages());
     }
@@ -164,7 +164,7 @@ public class DAQLogHandlerTest
                 // ignore interrupts
             }
         }
-        assertFalse(logRdr.getNextError(), logRdr.hasError());
+        if (logRdr.hasError()) fail(logRdr.getNextError());
         assertEquals("Not all log messages were received",
                      0, logRdr.getNumberOfExpectedMessages());
     }
