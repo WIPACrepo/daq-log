@@ -92,8 +92,9 @@ public class LiveLoggingSocketTest
         String message = "message";
 
         final int prio = LiveLoggingSocket.LIVE_PRIORITY;
-        final String dateStr = String.format("%tF %tT.%tL", date, date, date);
-        logRdr.addExpected(svc + "(log:str) " + prio + " [" + dateStr + "] " +
+        final String dateStr =
+            String.format("%tF %tT.%tL000", date, date, date);
+        logRdr.addExpected("pdaq(log:str) " + prio + " [" + dateStr + "] " +
                            level + " " + name + "-" + thrName + " " + message);
 
         logSock.write(name, thrName, level, date, message, null);
@@ -114,7 +115,8 @@ public class LiveLoggingSocketTest
         Calendar date = Calendar.getInstance();
 
         final int prio = LiveLoggingSocket.LIVE_PRIORITY;
-        final String dateStr = String.format("%tF %tT.%tL", date, date, date);
+        final String dateStr =
+            String.format("%tF %tT.%tL000", date, date, date);
 
         StringBuilder msgBuf = new StringBuilder("xxxxx");
         for (int i = 0; i < LiveLoggingSocket.LIVE_MSGMAX; i++) {
@@ -123,7 +125,7 @@ public class LiveLoggingSocketTest
 
         String longMsg = msgBuf.toString();
 
-        String front = svc + "(log:str) " + prio + " [" + dateStr + "] " +
+        String front = "pdaq(log:str) " + prio + " [" + dateStr + "] " +
             level + " ";
         String middle = name + "-" + thrName + " ";
 
@@ -162,8 +164,9 @@ public class LiveLoggingSocketTest
         String message = "message";
 
         final int prio = LiveLoggingSocket.LIVE_PRIORITY;
-        final String dateStr = String.format("%tF %tT.%tL", date, date, date);
-        logRdr.addExpected(svc + "(log:str) " + prio + " [" + dateStr + "] " +
+        final String dateStr =
+            String.format("%tF %tT.%tL000", date, date, date);
+        logRdr.addExpected("pdaq(log:str) " + prio + " [" + dateStr + "] " +
                            level + " ???-" + thrName + " " + message);
 
         logSock.write(null, thrName, level, date, message, null);
@@ -184,8 +187,9 @@ public class LiveLoggingSocketTest
         String message = "message";
 
         final int prio = LiveLoggingSocket.LIVE_PRIORITY;
-        final String dateStr = String.format("%tF %tT.%tL", date, date, date);
-        logRdr.addExpected(svc + "(log:str) " + prio + " [" + dateStr + "] " +
+        final String dateStr =
+            String.format("%tF %tT.%tL000", date, date, date);
+        logRdr.addExpected("pdaq(log:str) " + prio + " [" + dateStr + "] " +
                            level + " " + name + " " + message);
 
         logSock.write(name, null, level, date, message, null);
@@ -205,8 +209,9 @@ public class LiveLoggingSocketTest
         String message = "message";
 
         final int prio = LiveLoggingSocket.LIVE_PRIORITY;
-        final String dateStr = String.format("%tF %tT.%tL", date, date, date);
-        logRdr.addExpected(svc + "(log:str) " + prio + " [" + dateStr + "] " +
+        final String dateStr =
+            String.format("%tF %tT.%tL000", date, date, date);
+        logRdr.addExpected("pdaq(log:str) " + prio + " [" + dateStr + "] " +
                            level + " ??? " + message);
 
         logSock.write(null, null, level, date, message, null);
@@ -225,8 +230,9 @@ public class LiveLoggingSocketTest
         String message = "message";
 
         final int prio = LiveLoggingSocket.LIVE_PRIORITY;
-        final String dateStr = String.format("%tF %tT.%tL", date, date, date);
-        logRdr.addExpected(svc + "(log:str) " + prio + " [" + dateStr +
+        final String dateStr =
+            String.format("%tF %tT.%tL000", date, date, date);
+        logRdr.addExpected("pdaq(log:str) " + prio + " [" + dateStr +
                            "] ??? " + message);
 
         logSock.write(null, null, null, date, message, null);
@@ -244,8 +250,9 @@ public class LiveLoggingSocketTest
         Calendar date = Calendar.getInstance();
 
         final int prio = LiveLoggingSocket.LIVE_PRIORITY;
-        final String dateStr = String.format("%tF %tT.%tL", date, date, date);
-        logRdr.addExpected(svc + "(log:str) " + prio + " [" + dateStr +
+        final String dateStr =
+            String.format("%tF %tT.%tL000", date, date, date);
+        logRdr.addExpected("pdaq(log:str) " + prio + " [" + dateStr +
                            "] ???");
 
         logSock.write(null, null, null, date, null, null);
