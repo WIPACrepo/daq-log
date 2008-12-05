@@ -84,19 +84,7 @@ public class LoggingOutputStream
 
     private synchronized boolean isLooping()
     {
-        boolean looping = false;
-
-        final int curFrames = Thread.currentThread().countStackFrames();
-        if (curFrames <= prevFrames) {
-            numIncreases = 0;
-        } else {
-            numIncreases++;
-            looping = numIncreases > MAX_INCREASES;
-        }
-
-        prevFrames = curFrames;
-
-        return looping;
+        return false;
     }
 
     public void write(byte[] b)
