@@ -22,4 +22,13 @@
     <url>http://code.icecube.wisc.edu/daq/projects/${project.name}</url>
   </scm>
 
+  <!-- Dependencies for this project.  These should not contain
+  versions.  The versions needed should be specified in the top-level
+  pom's dependencyManagement -->
+  <dependencies>
+    <dependency>
+      <groupId>edu.wisc.icecube</groupId>
+      <artifactId>daq-common</artifactId>
+    </dependency>
+  </dependencies>
 </project>

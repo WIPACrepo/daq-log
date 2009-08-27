@@ -1,78 +1,34 @@
 package icecube.daq.log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Calendar;
 
-class LoggingSocket
+abstract class LoggingSocket
 {
+    private InetAddress address;
+    private int port;
     private DatagramSocket socket;
-    private StringBuffer msgBuf;
-    private ByteArrayOutputStream byteOut;
-    private PrintStream bytePrint;
 
     LoggingSocket(String hostname, int port)
         throws UnknownHostException, SocketException
     {
         super();
 
-        InetAddress address = InetAddress.getByName(hostname);
+        address = InetAddress.getByName(hostname);
 
-        this.socket = new DatagramSocket();
-        socket.connect(address, port);
+        this.port = port;
+
+        reconnect();
     }
 
-    private String buildMessage(String loggerName, String threadName,
-                                String level, String date, String message,
-                                Throwable throwable)
-    {
-        if (msgBuf == null) {
-            msgBuf = new StringBuffer();
-        } else {
-            msgBuf.setLength(0);
-        }
-
-        if (loggerName != null) {
-            msgBuf.append(loggerName);
-            if (threadName != null) {
-                msgBuf.append('-').append(threadName);
-            }
-        } else if (threadName != null) {
-            msgBuf.append("???-").append(threadName);
-        } else {
-            msgBuf.append("???");
-        }
-
-        if (level != null) {
-            msgBuf.append(' ').append(level);
-        }
-
-        if (date != null) {
-            msgBuf.append(" [").append(date).append("] ");
-        }
-
-        msgBuf.append(message);
-
-        if (throwable != null) {
-            if (byteOut == null) {
-                byteOut = new ByteArrayOutputStream();
-                bytePrint = new PrintStream(byteOut);
-            } else {
-                byteOut.reset();
-            }
-
-            throwable.printStackTrace(bytePrint);
-            msgBuf.append('\n').append(byteOut.toString());
-        }
-
-        return msgBuf.toString();
-    }
+    abstract void formatAndSend(String loggerName, String threadName,
+                                String level, Calendar date,
+                                String message, Throwable throwable);
 
     void close()
     {
@@ -82,6 +38,24 @@ class LoggingSocket
         }
     }
 
+    /**
+     * Is this socket connected to a remote socket?
+     *
+     * @return <tt>true</tt> if this socket is connected to a remote socket
+     */
+    boolean isConnected()
+    {
+        return socket != null;
+    }
+
+    /**
+     * Is this socket connected to the specified socket?
+     *
+     * @param hostname remote host name/address
+     * @param port port number
+     *
+     * @return <tt>true</tt> if this socket is connected to the specified socket
+     */
     boolean isConnected(String hostname, int port)
     {
         if (socket == null) {
@@ -99,19 +73,35 @@ class LoggingSocket
             return false;
         }
 
-        return port == socket.getLocalPort();
+        return port == socket.getPort();
     }
 
-    /** Try to write msg to sock; do nothing if fails */
-    void write(String loggerName, String threadName, String level, String date,
-               String message, Throwable throwable)
+    /**
+     * Reconnect to logging socket.
+     *
+     * @throws SocketException if the connection could not be made
+     */
+    void reconnect()
+        throws SocketException
+    {
+        if (socket != null) {
+            throw new Error("LoggingSocket is already connected");
+        }
+
+        socket = new DatagramSocket();
+        socket.connect(address, port);
+    }
+
+    /**
+     * Send the message in a single datagram.
+     *
+     * @param msg message string
+     */
+    void sendMsg(String msg)
     {
         if (socket == null) {
             return;
         }
-
-        String msg = buildMessage(loggerName, threadName, level, date, message,
-                                  throwable);
 
         byte[] buf = msg.getBytes();
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -122,4 +112,25 @@ class LoggingSocket
         }
     }
 
+    /** Try to write msg to sock; do nothing if fails */
+    void write(String loggerName, String threadName, String level,
+               Calendar date, String message, Throwable throwable)
+    {
+        if (socket == null) {
+            return;
+        }
+
+        formatAndSend(loggerName, threadName, level, date, message,
+                      throwable);
+    }
+
+    public String toString()
+    {
+        if (socket == null) {
+            return "LoggingSocket[NULL]";
+        }
+
+        return "LoggingSocket[" + socket.getInetAddress() + "@" +
+            socket.getPort() + "]";
+    }
 }

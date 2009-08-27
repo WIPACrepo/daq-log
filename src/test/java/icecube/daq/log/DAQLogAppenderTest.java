@@ -1,8 +1,5 @@
 package icecube.daq.log;
 
-import icecube.daq.log.DAQLogAppender;
-import icecube.daq.log.LoggingOutputStream;
-
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -12,7 +9,6 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 
@@ -28,12 +24,29 @@ public class DAQLogAppenderTest
     private static final int LOGPORT = 6666;
 
     private LogReader logRdr;
+    private LogReader liveRdr;
     private DAQLogAppender appender;
 
-    private void sendMsg(Level level, String msg)
+    private void createAppender(String name, Level level, String logHost,
+                                int logPort, String liveHost, int livePort)
+    {
+        try {
+            appender = new DAQLogAppender(name, level, logHost, logPort,
+                                          liveHost, livePort);
+        } catch (Exception ex) {
+            System.err.println("Couldn't create appender");
+            ex.printStackTrace();
+            appender = null;
+        }
+
+        BasicConfigurator.resetConfiguration();
+        BasicConfigurator.configure(appender);
+    }
+
+    private void sendMsg(Level level, String msg, LogReader rdr)
     {
         if (level.isGreaterOrEqual(appender.getLevel())) {
-            logRdr.addExpected(msg);
+            rdr.addExpected(msg);
         }
 
         if (level.equals(Level.DEBUG)) {
@@ -57,26 +70,6 @@ public class DAQLogAppenderTest
 
         System.setProperty("org.apache.commons.logging.Log",
                            "org.apache.commons.logging.impl.Log4JLogger");
-
-        try {
-            logRdr = new LogReader();
-        } catch (IOException ioe) {
-            System.err.println("Couldn't create log reader");
-            ioe.printStackTrace();
-            logRdr = null;
-        }
-
-        try {
-            appender = new DAQLogAppender(Level.INFO, "localhost",
-                                          logRdr.getPort());
-        } catch (Exception ex) {
-            System.err.println("Couldn't create appender");
-            ex.printStackTrace();
-            appender = null;
-        }
-
-        BasicConfigurator.resetConfiguration();
-        BasicConfigurator.configure(appender);
     }
 
     public static Test suite()
@@ -93,50 +86,78 @@ public class DAQLogAppenderTest
             System.setErr(STDERR);
         }
 
-        appender.close();
-        logRdr.close();
+        if (appender != null) {
+            appender.close();
+        }
 
-        assertFalse(logRdr.getNextError(), logRdr.hasError());
-        assertEquals("Not all log messages were received",
-                     0, logRdr.getNumberOfExpectedMessages());
+        if (logRdr != null) {
+            logRdr.close();
+
+            if (logRdr.hasError()) {
+                fail(logRdr.getNextError());
+            }
+
+            assertEquals("Not all log messages were received",
+                         0, logRdr.getNumberOfExpectedMessages());
+        }
+
+        if (liveRdr != null) {
+            liveRdr.close();
+
+            if (liveRdr.hasError()) {
+                fail(liveRdr.getNextError());
+            }
+
+            assertEquals("Not all live messages were received",
+                         0, liveRdr.getNumberOfExpectedMessages());
+        }
     }
 
-    private void waitForLogMessages()
+    private void waitForLogMessages(LogReader rdr)
     {
-        for (int i = 0;
-             !logRdr.hasError() && !logRdr.isFinished() && i < 10;
-             i++)
-        {
+        for (int i = 0; !rdr.hasError() && !rdr.isFinished() && i < 10; i++) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ie) {
                 // ignore interrupts
             }
         }
-        assertFalse(logRdr.getNextError(), logRdr.hasError());
+        if (rdr.hasError()) fail(rdr.getNextError());
         assertEquals("Not all log messages were received",
-                     0, logRdr.getNumberOfExpectedMessages());
+                     0, rdr.getNumberOfExpectedMessages());
     }
 
-    public void testLog()
+    public void ZZZtestLog()
+        throws IOException
     {
-        sendMsg(Level.INFO, "This is a test of logging.");
-        sendMsg(Level.INFO, "This is test 2 of logging.");
-        sendMsg(Level.WARN, "This is a WARN test.");
-        sendMsg(Level.WARN, "This is a ERROR test.");
-        sendMsg(Level.WARN, "This is a FATAL test.");
-        sendMsg(Level.DEBUG, "This is a DEBUG test.");
+        logRdr = new LogReader("log");
 
-        waitForLogMessages();
+        createAppender("noname", Level.INFO, "localhost", logRdr.getPort(),
+                       null, 0);
+
+        sendMsg(Level.INFO, "This is a test of logging.", logRdr);
+        sendMsg(Level.INFO, "This is another test of logging.", logRdr);
+        sendMsg(Level.WARN, "This is a WARN test.", logRdr);
+        sendMsg(Level.WARN, "This is a ERROR test.", logRdr);
+        sendMsg(Level.WARN, "This is a FATAL test.", logRdr);
+        sendMsg(Level.DEBUG, "This is a DEBUG test.", logRdr);
+
+        waitForLogMessages(logRdr);
 
         for (int i = 0; i < 3; i++) {
-            sendMsg(Level.INFO, "This is test " + i + " of logging.");
-            waitForLogMessages();
+            sendMsg(Level.INFO, "This is test " + i + " of logging.", logRdr);
+            waitForLogMessages(logRdr);
         }
     }
 
-    public void testRedirect()
+    public void ZZZtestRedirect()
+        throws IOException
     {
+        logRdr = new LogReader("log");
+
+        createAppender("noname", Level.INFO, "localhost", logRdr.getPort(),
+                       null, 0);
+
         Log errLog = LogFactory.getLog("STDERR");
         LoggingOutputStream logStream =
             new LoggingOutputStream(errLog, Level.ERROR);
@@ -145,7 +166,55 @@ public class DAQLogAppenderTest
         String errMsg = "Error";
         logRdr.addExpected(errMsg);
         System.err.println(errMsg);
-        waitForLogMessages();
+        waitForLogMessages(logRdr);
+    }
+
+    public void testLogLive()
+        throws IOException
+    {
+        logRdr = new LogReader("log");
+        liveRdr = new LogReader("live");
+
+        String[] logMsgs = new String[] { "LOG 1", "LOG 2" };
+
+        for (int i = 1; i < 4; i++) {
+            String logHost;
+            int logPort;
+            if ((i & 0x1) == 0x1) {
+                logHost = "localhost";
+                logPort = logRdr.getPort();
+            } else {
+                logHost = null;
+                logPort = 0;
+            }
+
+            String liveHost;
+            int livePort;
+            if ((i & 0x2) == 0x2) {
+                liveHost = "localhost";
+                livePort = liveRdr.getPort();
+            } else {
+                liveHost = null;
+                livePort = 0;
+            }
+
+            createAppender("noname", Level.INFO, logHost, logPort,
+                           liveHost, livePort);
+
+            for (int s = 0; s < logMsgs.length; s++) {
+                if (logHost != null) {
+                    logRdr.addExpected(logMsgs[s]);
+                }
+                if (liveHost != null) {
+                    liveRdr.addExpected(logMsgs[s]);
+                }
+
+                LOG.error(logMsgs[s]);
+            }
+
+            waitForLogMessages(logRdr);
+            waitForLogMessages(liveRdr);
+        }
     }
 
     /**

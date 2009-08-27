@@ -1,9 +1,9 @@
 package icecube.daq.log;
 
-import org.apache.log4j.Appender;
+import icecube.daq.common.IDAQAppender;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
-
 import org.apache.log4j.spi.ErrorHandler;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.spi.LocationInfo;
@@ -13,7 +13,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * Basic log4j appender.
  */
 public class BasicAppender
-    implements Appender
+    implements IDAQAppender
 {
     /** minimum level of log messages which will be print. */
     private Level minLevel;
@@ -114,6 +114,16 @@ public class BasicAppender
     }
 
     /**
+     * Get the logging level.
+     *
+     * @return lowest leel of messages which will be logged
+     */
+    public Level getLevel()
+    {
+        return minLevel;
+    }
+
+    /**
      * Unimplemented.
      *
      * @return ???
@@ -121,6 +131,35 @@ public class BasicAppender
     public String getName()
     {
         throw new Error("Unimplemented");
+    }
+
+    /**
+     * Basic appender is always connected to System.out.
+     *
+     * @return <tt>true</tt>
+     */
+    public boolean isConnected(String logHost, int logPort, String liveHost,
+                               int livePort)
+    {
+        return true;
+    }
+
+    /**
+     * Basic appender is always connected to System.out.
+     *
+     * @return <tt>true</tt>
+     */
+    public boolean isConnected()
+    {
+        return true;
+    }
+
+    /**
+     * No need to reconnect to System.out, so this method does nothing.
+     */
+    public void reconnect()
+    {
+        // do nothing
     }
 
     /**

@@ -1,15 +1,14 @@
 package icecube.daq.log;
 
 import java.io.IOException;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
 class LogReader
 {
+    private String name;
     private DatagramSocket sock;
     private int port;
     private ArrayList<String> expList;
@@ -17,9 +16,11 @@ class LogReader
 
     private boolean running;
 
-    LogReader()
+    LogReader(String name)
         throws IOException
     {
+        this.name = name;
+
         sock = new DatagramSocket();
         port = sock.getLocalPort();
 
@@ -27,7 +28,7 @@ class LogReader
         errorList = new ArrayList();
 
         Thread thread = new Thread(new ReaderThread());
-        thread.setName("ReaderThread");
+        thread.setName("ReaderThread-" + name);
         thread.start();
     }
 
@@ -93,14 +94,22 @@ class LogReader
                 }
 
                 String fullMsg = new String(buf, 0, packet.getLength());
+
+                int lastChar = fullMsg.length() - 1;
+                if (lastChar >= 0 && fullMsg.charAt(lastChar) == '\n') {
+                    fullMsg = fullMsg.substring(0, lastChar);
+                }
+
                 String errMsg = null;
                 if (expList.isEmpty()) {
-                    errMsg = "Got unexpected log message: " + fullMsg;
+                    errMsg = "Got unexpected " + name + " message: " + fullMsg;
                 } else {
                     String expMsg = expList.remove(0);
-                    if (!fullMsg.endsWith(expMsg)) {
-                        errMsg = "Expected \"" + expMsg + "\", got \"" +
-                            fullMsg + "\"";
+                    if (!fullMsg.startsWith(expMsg) &&
+                        !fullMsg.endsWith(expMsg))
+                    {
+                        errMsg = "Expected " + name + " \"" + expMsg +
+                            "\", got \"" + fullMsg + "\"";
                     }
                 }
 
