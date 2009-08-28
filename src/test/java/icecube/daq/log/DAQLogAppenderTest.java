@@ -127,7 +127,7 @@ public class DAQLogAppenderTest
                      0, rdr.getNumberOfExpectedMessages());
     }
 
-    public void ZZZtestLog()
+    public void testLog()
         throws IOException
     {
         logRdr = new LogReader("log");
@@ -150,7 +150,7 @@ public class DAQLogAppenderTest
         }
     }
 
-    public void ZZZtestRedirect()
+    public void testRedirect()
         throws IOException
     {
         logRdr = new LogReader("log");
