@@ -68,6 +68,20 @@ public class DAQLogAppender implements IDAQAppender {
     /** Adapted from MockAppender */
     public void doAppend(LoggingEvent evt) {
         if (evt.getLevel().isGreaterOrEqual(minLevel)) {
+            String level;
+            if (evt.getLevel() == null) {
+                level = "UNKNOWN";
+            } else {
+                level = evt.getLevel().toString();
+            }
+
+            String msg;
+            if (evt.getMessage() == null) {
+                msg = "";
+            } else {
+                msg = evt.getMessage().toString();
+            }
+
             Throwable throwable;
             if (evt.getThrowableInformation() == null) {
                 throwable = null;
@@ -75,17 +89,18 @@ public class DAQLogAppender implements IDAQAppender {
                 throwable =
                     evt.getThrowableInformation().getThrowable();
             }
+
             Calendar now = Calendar.getInstance();
             now.setTime(new Date(evt.timeStamp));
+
             if (liveSocket != null) {
                 liveSocket.write(evt.getLoggerName(), evt.getThreadName(),
-                                 evt.getLevel().toString(), now,
-                                 evt.getMessage().toString(), throwable);
+                                 level, now, msg, throwable);
             }
+
             if (logSocket != null) {
                 logSocket.write(evt.getLoggerName(), evt.getThreadName(),
-                                evt.getLevel().toString(), now,
-                                evt.getMessage().toString(), throwable);
+                                level, now, msg, throwable);
             }
         }
     }
