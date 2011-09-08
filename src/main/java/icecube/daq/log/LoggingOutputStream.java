@@ -67,7 +67,8 @@ public class LoggingOutputStream
                 if (isLooping()) {
                     STDERR.println(record);
                     STDERR.println("WARNING!  LoggingOutputStream is looping");
-                } if (level.isGreaterOrEqual(Level.FATAL)) {
+                } 
+                if (level.isGreaterOrEqual(Level.FATAL)) {
                     logger.fatal(record);
                 } else if (level.isGreaterOrEqual(Level.ERROR)) {
                     logger.error(record);

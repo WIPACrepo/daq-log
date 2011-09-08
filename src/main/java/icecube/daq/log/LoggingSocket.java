@@ -107,7 +107,7 @@ abstract class LoggingSocket
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         try {
             socket.send(packet);
-        } catch(IOException e) {
+        } catch (IOException e) {
             // silently drop the log message
         }
     }

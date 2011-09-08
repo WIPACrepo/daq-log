@@ -2,7 +2,6 @@ package icecube.daq.log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Calendar;
