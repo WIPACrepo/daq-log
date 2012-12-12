@@ -26,8 +26,9 @@ public class LoggingOutputStream
 
     private String lineSeparator;
 
-    private int prevFrames;
-    private int numIncreases;
+    //unused:
+    //private int prevFrames;
+    //private int numIncreases;
 
     /**
      * Constructor
