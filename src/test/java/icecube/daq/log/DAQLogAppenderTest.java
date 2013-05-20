@@ -138,8 +138,8 @@ public class DAQLogAppenderTest
         sendMsg(Level.INFO, "This is a test of logging.", logRdr);
         sendMsg(Level.INFO, "This is another test of logging.", logRdr);
         sendMsg(Level.WARN, "This is a WARN test.", logRdr);
-        sendMsg(Level.WARN, "This is a ERROR test.", logRdr);
-        sendMsg(Level.WARN, "This is a FATAL test.", logRdr);
+        sendMsg(Level.ERROR, "This is a ERROR test.", logRdr);
+        sendMsg(Level.FATAL, "This is a FATAL test.", logRdr);
         sendMsg(Level.DEBUG, "This is a DEBUG test.", logRdr);
 
         waitForLogMessages(logRdr);
