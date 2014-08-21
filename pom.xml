@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>daq-log</artifactId>
   <packaging>jar</packaging>
-  <name>daq-log</name>
+  <name>Logging subsystem</name>
   <description>The logging sub-system of the Surface Data Acquisition system for the IceCube Project.</description>
 
   <scm>

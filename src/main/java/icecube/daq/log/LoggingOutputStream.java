@@ -18,17 +18,10 @@ public class LoggingOutputStream
     /** Original standard error stream */
     private static final PrintStream STDERR = System.err;
 
-    /** Maximum number of stack frame increases allowed before giving up */
-    private static final int MAX_INCREASES = 12;
-
     private Log logger;
     private Level level;
 
     private String lineSeparator;
-
-    //unused:
-    //private int prevFrames;
-    //private int numIncreases;
 
     /**
      * Constructor
@@ -68,7 +61,7 @@ public class LoggingOutputStream
                 if (isLooping()) {
                     STDERR.println(record);
                     STDERR.println("WARNING!  LoggingOutputStream is looping");
-                } 
+                }
                 if (level.isGreaterOrEqual(Level.FATAL)) {
                     logger.fatal(record);
                 } else if (level.isGreaterOrEqual(Level.ERROR)) {
