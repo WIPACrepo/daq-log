@@ -17,7 +17,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * Forward org.apache.log4j messages to DAQ logger.
  * @author John Jacobsen, NPX Designs, Inc. for UW-Madison IceCube.
  */
-public class DAQLogAppender implements IDAQAppender 
+public class DAQLogAppender implements IDAQAppender
 {
     private LiveLoggingSocket liveSocket;
     private OldLoggingSocket logSocket;
@@ -53,9 +53,9 @@ public class DAQLogAppender implements IDAQAppender
         }
     }
 
-    public boolean requiresLayout()      
+    public boolean requiresLayout()
     {
-        return false; 
+        return false;
     }
 
     public void close()
@@ -69,7 +69,7 @@ public class DAQLogAppender implements IDAQAppender
     }
 
     /** Adapted from MockAppender */
-    public void doAppend(LoggingEvent evt) 
+    public void doAppend(LoggingEvent evt)
     {
         if (evt.getLevel().isGreaterOrEqual(minLevel)) {
             String level;
@@ -109,55 +109,55 @@ public class DAQLogAppender implements IDAQAppender
         }
     }
 
-    public void addFilter(Filter newFilter) 
-    { 
-        throw new Error("Unimplemented"); 
-    }
-
-    public void clearFilters() 
-    { 
-        throw new Error("Unimplemented"); 
-    }
-             
-    public ErrorHandler getErrorHandler()       
-    { 
-        throw new Error("Unimplemented"); 
-    }
-    
-    public Filter getFilter()
-    { 
-        throw new Error("Unimplemented"); 
-    }
-              
-    public Layout getLayout()  
-    { 
-        throw new Error("Unimplemented"); 
-    }
-
-                 
-    public String getName()        
-    { 
-        throw new Error("Unimplemented"); 
-    }
-          
-    public void setLayout(Layout layout)  
-    { 
-        throw new Error("Unimplemented"); 
-    }
-      
-    public void setName(String name)        
-    { 
-        throw new Error("Unimplemented"); 
-    }
-    
-    public void setErrorHandler(ErrorHandler errorHandler) 
+    public void addFilter(Filter newFilter)
     {
         throw new Error("Unimplemented");
     }
 
-    public Level getLevel()                 
+    public void clearFilters()
     {
-        return minLevel; 
+        throw new Error("Unimplemented");
+    }
+
+    public ErrorHandler getErrorHandler()
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public Filter getFilter()
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public Layout getLayout()
+    {
+        throw new Error("Unimplemented");
+    }
+
+
+    public String getName()
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public void setLayout(Layout layout)
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public void setName(String name)
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public void setErrorHandler(ErrorHandler errorHandler)
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public Level getLevel()
+    {
+        return minLevel;
     }
 
     public boolean isConnected()
