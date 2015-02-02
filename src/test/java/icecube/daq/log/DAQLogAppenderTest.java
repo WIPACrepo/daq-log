@@ -26,6 +26,7 @@ public class DAQLogAppenderTest
     private LogReader logRdr;
     private LogReader liveRdr;
     private DAQLogAppender appender;
+    private boolean sleptOnce;
 
     private void createAppender(String name, Level level, String logHost,
                                 int logPort, String liveHost, int livePort)
@@ -41,6 +42,16 @@ public class DAQLogAppenderTest
 
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure(appender);
+
+        if (!sleptOnce) {
+            // give Log4J a chance to change the appender everywhere
+            sleptOnce = true;
+            try {
+                Thread.sleep(100);
+            } catch (Throwable thr) {
+                // ignore interrupts
+            }
+        }
     }
 
     private void sendMsg(Level level, String msg, LogReader rdr)
