@@ -7,15 +7,15 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 public class DAQLogAppenderTest
     extends TestCase
 {
-    private static final Log LOG = LogFactory.getLog(DAQLogAppenderTest.class);
+    private static final Logger LOG =
+        Logger.getLogger(DAQLogAppenderTest.class);
 
     private static final PrintStream STDOUT = System.out;
     private static final PrintStream STDERR = System.err;
@@ -26,7 +26,6 @@ public class DAQLogAppenderTest
     private LogReader logRdr;
     private LogReader liveRdr;
     private DAQLogAppender appender;
-    private boolean sleptOnce;
 
     private void createAppender(String name, Level level, String logHost,
                                 int logPort, String liveHost, int livePort)
@@ -43,14 +42,11 @@ public class DAQLogAppenderTest
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure(appender);
 
-        if (!sleptOnce) {
-            // give Log4J a chance to change the appender everywhere
-            sleptOnce = true;
-            try {
-                Thread.sleep(100);
-            } catch (Throwable thr) {
-                // ignore interrupts
-            }
+        // give Log4J a chance to change the appender everywhere
+        try {
+            Thread.sleep(100);
+        } catch (Throwable thr) {
+            // ignore interrupts
         }
     }
 
@@ -73,14 +69,6 @@ public class DAQLogAppenderTest
         } else {
             fail("Unknown log level " + level);
         }
-    }
-
-    protected void setUp()
-    {
-        LogFactory.getFactory().releaseAll();
-
-        System.setProperty("org.apache.commons.logging.Log",
-                           "org.apache.commons.logging.impl.Log4JLogger");
     }
 
     public static Test suite()
@@ -169,9 +157,9 @@ public class DAQLogAppenderTest
         createAppender("noname", Level.INFO, "localhost", logRdr.getPort(),
                        null, 0);
 
-        Log errLog = LogFactory.getLog("STDERR");
-        LoggingOutputStream logStream =
-            new LoggingOutputStream(errLog, Level.ERROR);
+        Logger errLog = Logger.getLogger("STDERR");
+        LoggerOutputStream logStream =
+            new LoggerOutputStream(errLog, Level.ERROR);
         System.setErr(new PrintStream(logStream));
 
         String errMsg = "Error";
