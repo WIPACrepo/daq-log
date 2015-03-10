@@ -41,13 +41,6 @@ public class DAQLogAppenderTest
 
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure(appender);
-
-        // give Log4J a chance to change the appender everywhere
-        try {
-            Thread.sleep(100);
-        } catch (Throwable thr) {
-            // ignore interrupts
-        }
     }
 
     private void sendMsg(Level level, String msg, LogReader rdr)
