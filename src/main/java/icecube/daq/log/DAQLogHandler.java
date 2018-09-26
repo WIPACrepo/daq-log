@@ -87,6 +87,7 @@ public class DAQLogHandler
     /* (non-API documentation)
      * @see java.util.logging.Handler#flush()
      */
+    @Override
     public void flush()
     {
         // nothing to flush
@@ -95,6 +96,7 @@ public class DAQLogHandler
     /* (non-API documentation)
      * @see java.util.logging.Handler#close()
      */
+    @Override
     public void close() throws SecurityException
     {
         if (liveSocket != null) {

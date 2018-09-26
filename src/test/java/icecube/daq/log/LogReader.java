@@ -80,6 +80,7 @@ class LogReader
         {
         }
 
+        @Override
         public void run()
         {
             running = true;

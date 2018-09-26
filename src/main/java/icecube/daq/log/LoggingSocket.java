@@ -124,6 +124,7 @@ abstract class LoggingSocket
                       throwable);
     }
 
+    @Override
     public String toString()
     {
         if (socket == null) {

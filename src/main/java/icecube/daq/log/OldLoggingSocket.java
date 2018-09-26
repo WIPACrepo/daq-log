@@ -18,6 +18,7 @@ class OldLoggingSocket
         super(hostname, port);
     }
 
+    @Override
     void formatAndSend(String loggerName, String threadName, String level,
                        Calendar date, String message, Throwable throwable)
     {

@@ -69,6 +69,7 @@ public class DAQLogAppenderTest
         return new TestSuite(DAQLogAppenderTest.class);
     }
 
+    @Override
     protected void tearDown()
     {
         if (!STDOUT.equals(System.out)) {

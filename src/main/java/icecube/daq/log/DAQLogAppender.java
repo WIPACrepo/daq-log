@@ -53,11 +53,13 @@ public class DAQLogAppender implements IDAQAppender
         }
     }
 
+    @Override
     public boolean requiresLayout()
     {
         return false;
     }
 
+    @Override
     public void close()
     {
         if (liveSocket != null) {
@@ -114,6 +116,7 @@ public class DAQLogAppender implements IDAQAppender
         throw new Error("Unimplemented");
     }
 
+    @Override
     public void clearFilters()
     {
         throw new Error("Unimplemented");
@@ -135,6 +138,7 @@ public class DAQLogAppender implements IDAQAppender
     }
 
 
+    @Override
     public String getName()
     {
         throw new Error("Unimplemented");
@@ -145,6 +149,7 @@ public class DAQLogAppender implements IDAQAppender
         throw new Error("Unimplemented");
     }
 
+    @Override
     public void setName(String name)
     {
         throw new Error("Unimplemented");
@@ -155,11 +160,13 @@ public class DAQLogAppender implements IDAQAppender
         throw new Error("Unimplemented");
     }
 
+    @Override
     public Level getLevel()
     {
         return minLevel;
     }
 
+    @Override
     public boolean isConnected()
     {
         if (liveSocket != null && liveSocket.isConnected()) {
@@ -171,6 +178,7 @@ public class DAQLogAppender implements IDAQAppender
         return false;
     }
 
+    @Override
     public boolean isConnected(String logHost, int logPort,
                                String liveHost, int livePort)
     {
@@ -183,6 +191,7 @@ public class DAQLogAppender implements IDAQAppender
         return false;
     }
 
+    @Override
     public void reconnect()
         throws SocketException
     {
@@ -194,6 +203,7 @@ public class DAQLogAppender implements IDAQAppender
         }
     }
 
+    @Override
     public String toString()
     {
         return "DAQLogAppender[" + liveSocket + "+" + logSocket + "@" +
