@@ -50,7 +50,7 @@ public class DAQLogHandler
     /* (non-API documentation)
      * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
      */
-    public void publish(LogRecord rec) 
+    public void publish(LogRecord rec)
     {
         if (isLoggable(rec)) {
             String threadName = "Thread#" + rec.getThreadID();
@@ -87,7 +87,7 @@ public class DAQLogHandler
     /* (non-API documentation)
      * @see java.util.logging.Handler#flush()
      */
-    public void flush() 
+    public void flush()
     {
         // nothing to flush
     }
@@ -95,7 +95,7 @@ public class DAQLogHandler
     /* (non-API documentation)
      * @see java.util.logging.Handler#close()
      */
-    public void close() throws SecurityException 
+    public void close() throws SecurityException
     {
         if (liveSocket != null) {
             liveSocket.close();
