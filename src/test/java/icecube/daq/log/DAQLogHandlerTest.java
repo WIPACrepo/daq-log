@@ -10,9 +10,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 class TinyAppender
     implements org.apache.log4j.Appender
 {
@@ -72,30 +69,13 @@ public class DAQLogHandlerTest
             logRdr.addExpected(msg);
         }
 
-        Log log = LogFactory.getLog(DAQLogHandlerTest.class);
-        if (level.intValue() < Level.FINE.intValue()) {
-            log.trace(msg);
-        } else if (level.intValue() < Level.INFO.intValue()) {
-            log.debug(msg);
-        } else if (level.equals(Level.INFO)) {
-            log.info(msg);
-        } else if (level.equals(Level.WARNING)) {
-            log.warn(msg);
-        } else if (level.equals(Level.SEVERE)) {
-            log.fatal(msg);
-        } else {
-            fail("Unknown log level " + level);
-        }
+        Logger log = Logger.getLogger(DAQLogHandlerTest.class.getName());
+        log.log(level, msg);
     }
 
     @Override
     protected void setUp()
     {
-        LogFactory.getFactory().releaseAll();
-
-        System.setProperty("org.apache.commons.logging.Log",
-                           "org.apache.commons.logging.impl.Jdk14Logger");
-
         org.apache.log4j.BasicConfigurator.resetConfiguration();
         org.apache.log4j.BasicConfigurator.configure(new TinyAppender());
 
@@ -192,9 +172,9 @@ public class DAQLogHandlerTest
 
     public void testRedirect()
     {
-        Log errLog = LogFactory.getLog("STDERR");
+        Logger errLog = Logger.getLogger("STDERR");
         LoggingOutputStream logStream =
-            new LoggingOutputStream(errLog, org.apache.log4j.Level.ERROR);
+            new LoggingOutputStream(errLog, Level.SEVERE);
         System.setErr(new PrintStream(logStream));
 
         String errMsg = "Error";
