@@ -20,6 +20,7 @@ public class OldLoggingSocketTest
         return new TestSuite(OldLoggingSocketTest.class);
     }
 
+    @Override
     protected void setUp()
     {
         try {
@@ -31,6 +32,7 @@ public class OldLoggingSocketTest
         logSock = null;
     }
 
+    @Override
     protected void tearDown()
     {
         if (logSock != null) {

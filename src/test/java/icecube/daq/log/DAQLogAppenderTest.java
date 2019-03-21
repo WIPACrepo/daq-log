@@ -7,15 +7,15 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 public class DAQLogAppenderTest
     extends TestCase
 {
-    private static final Log LOG = LogFactory.getLog(DAQLogAppenderTest.class);
+    private static final Logger LOG =
+        Logger.getLogger(DAQLogAppenderTest.class);
 
     private static final PrintStream STDOUT = System.out;
     private static final PrintStream STDERR = System.err;
@@ -64,19 +64,12 @@ public class DAQLogAppenderTest
         }
     }
 
-    protected void setUp()
-    {
-        LogFactory.getFactory().releaseAll();
-
-        System.setProperty("org.apache.commons.logging.Log",
-                           "org.apache.commons.logging.impl.Log4JLogger");
-    }
-
     public static Test suite()
     {
         return new TestSuite(DAQLogAppenderTest.class);
     }
 
+    @Override
     protected void tearDown()
     {
         if (!STDOUT.equals(System.out)) {
@@ -127,7 +120,7 @@ public class DAQLogAppenderTest
                      0, rdr.getNumberOfExpectedMessages());
     }
 
-    public void ZZZtestLog()
+    public void testLog()
         throws IOException
     {
         logRdr = new LogReader("log");
@@ -138,8 +131,8 @@ public class DAQLogAppenderTest
         sendMsg(Level.INFO, "This is a test of logging.", logRdr);
         sendMsg(Level.INFO, "This is another test of logging.", logRdr);
         sendMsg(Level.WARN, "This is a WARN test.", logRdr);
-        sendMsg(Level.WARN, "This is a ERROR test.", logRdr);
-        sendMsg(Level.WARN, "This is a FATAL test.", logRdr);
+        sendMsg(Level.ERROR, "This is a ERROR test.", logRdr);
+        sendMsg(Level.FATAL, "This is a FATAL test.", logRdr);
         sendMsg(Level.DEBUG, "This is a DEBUG test.", logRdr);
 
         waitForLogMessages(logRdr);
@@ -150,7 +143,7 @@ public class DAQLogAppenderTest
         }
     }
 
-    public void ZZZtestRedirect()
+    public void testRedirect()
         throws IOException
     {
         logRdr = new LogReader("log");
@@ -158,9 +151,9 @@ public class DAQLogAppenderTest
         createAppender("noname", Level.INFO, "localhost", logRdr.getPort(),
                        null, 0);
 
-        Log errLog = LogFactory.getLog("STDERR");
-        LoggingOutputStream logStream =
-            new LoggingOutputStream(errLog, Level.ERROR);
+        Logger errLog = Logger.getLogger("STDERR");
+        LoggerOutputStream logStream =
+            new LoggerOutputStream(errLog, Level.ERROR);
         System.setErr(new PrintStream(logStream));
 
         String errMsg = "Error";

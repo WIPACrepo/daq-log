@@ -2,7 +2,6 @@ package icecube.daq.log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Calendar;
@@ -19,6 +18,7 @@ class OldLoggingSocket
         super(hostname, port);
     }
 
+    @Override
     void formatAndSend(String loggerName, String threadName, String level,
                        Calendar date, String message, Throwable throwable)
     {

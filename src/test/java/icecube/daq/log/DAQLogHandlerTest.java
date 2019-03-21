@@ -88,6 +88,7 @@ public class DAQLogHandlerTest
         }
     }
 
+    @Override
     protected void setUp()
     {
         LogFactory.getFactory().releaseAll();
@@ -135,6 +136,7 @@ public class DAQLogHandlerTest
         return new TestSuite(DAQLogHandlerTest.class);
     }
 
+    @Override
     protected void tearDown()
     {
         if (!STDOUT.equals(System.out)) {

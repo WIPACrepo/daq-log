@@ -4,21 +4,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
 /**
- * An OutputStream that writes contents to a Log upon each call to flush()
+ * An OutputStream that writes contents to a Logger upon each call to flush()
  *
- * From http://blogs.sun.com/nickstephen/entry/java_redirecting_system_out_and
+ * From http://blogs.oracle.com/nickstephen/entry/java_redirecting_system_out_and
  */
-public class LoggingOutputStream
+public class LoggerOutputStream
     extends ByteArrayOutputStream
 {
     /** Original standard error stream */
     private static final PrintStream STDERR = System.err;
 
-    private Log logger;
+    private Logger logger;
     private Level level;
 
     private String lineSeparator;
@@ -28,7 +28,7 @@ public class LoggingOutputStream
      * @param logger Logger to write to
      * @param level Level at which to write the log message
      */
-    public LoggingOutputStream(Log logger, Level level)
+    public LoggerOutputStream(Logger logger, Level level)
     {
         super();
 
@@ -60,7 +60,7 @@ public class LoggingOutputStream
             if (record.length() > 0) {
                 if (isLooping()) {
                     STDERR.println(record);
-                    STDERR.println("WARNING!  LoggingOutputStream is looping");
+                    STDERR.println("WARNING!  LoggerOutputStream is looping");
                 }
                 if (level.isGreaterOrEqual(Level.FATAL)) {
                     logger.fatal(record);

@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.ErrorHandler;
@@ -18,7 +17,8 @@ import org.apache.log4j.spi.LoggingEvent;
  * Forward org.apache.log4j messages to DAQ logger.
  * @author John Jacobsen, NPX Designs, Inc. for UW-Madison IceCube.
  */
-public class DAQLogAppender implements IDAQAppender {
+public class DAQLogAppender implements IDAQAppender
+{
     private LiveLoggingSocket liveSocket;
     private OldLoggingSocket logSocket;
 
@@ -37,7 +37,7 @@ public class DAQLogAppender implements IDAQAppender {
      */
     public DAQLogAppender(String compName, Level minLevel, String logHost,
                           int logPort, String liveHost, int livePort)
-	throws UnknownHostException, SocketException
+        throws UnknownHostException, SocketException
     {
         this.minLevel   = minLevel;
 
@@ -53,8 +53,13 @@ public class DAQLogAppender implements IDAQAppender {
         }
     }
 
-    public boolean requiresLayout()      { return false; }
+    @Override
+    public boolean requiresLayout()
+    {
+        return false;
+    }
 
+    @Override
     public void close()
     {
         if (liveSocket != null) {
@@ -66,8 +71,23 @@ public class DAQLogAppender implements IDAQAppender {
     }
 
     /** Adapted from MockAppender */
-    public void doAppend(LoggingEvent evt) {
+    public void doAppend(LoggingEvent evt)
+    {
         if (evt.getLevel().isGreaterOrEqual(minLevel)) {
+            String level;
+            if (evt.getLevel() == null) {
+                level = "UNKNOWN";
+            } else {
+                level = evt.getLevel().toString();
+            }
+
+            String msg;
+            if (evt.getMessage() == null) {
+                msg = "";
+            } else {
+                msg = evt.getMessage().toString();
+            }
+
             Throwable throwable;
             if (evt.getThrowableInformation() == null) {
                 throwable = null;
@@ -75,35 +95,78 @@ public class DAQLogAppender implements IDAQAppender {
                 throwable =
                     evt.getThrowableInformation().getThrowable();
             }
+
             Calendar now = Calendar.getInstance();
             now.setTime(new Date(evt.timeStamp));
+
             if (liveSocket != null) {
                 liveSocket.write(evt.getLoggerName(), evt.getThreadName(),
-                                 evt.getLevel().toString(), now,
-                                 evt.getMessage().toString(), throwable);
+                                 level, now, msg, throwable);
             }
+
             if (logSocket != null) {
                 logSocket.write(evt.getLoggerName(), evt.getThreadName(),
-                                evt.getLevel().toString(), now,
-                                evt.getMessage().toString(), throwable);
+                                level, now, msg, throwable);
             }
         }
     }
 
-    public void addFilter(Filter newFilter) { throw new Error("Unimplemented"); }
-    public void clearFilters()              { throw new Error("Unimplemented"); }
-    public ErrorHandler getErrorHandler()   { throw new Error("Unimplemented"); }
-    public Filter getFilter()               { throw new Error("Unimplemented"); }
-    public Layout getLayout()               { throw new Error("Unimplemented"); }
-    public String getName()                 { throw new Error("Unimplemented"); }
-    public void setLayout(Layout layout)    { throw new Error("Unimplemented"); }
-    public void setName(String name)        { throw new Error("Unimplemented"); }
-    public void setErrorHandler(ErrorHandler errorHandler) {
+    public void addFilter(Filter newFilter)
+    {
         throw new Error("Unimplemented");
     }
 
-    public Level getLevel()                 { return minLevel; }
+    @Override
+    public void clearFilters()
+    {
+        throw new Error("Unimplemented");
+    }
 
+    public ErrorHandler getErrorHandler()
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public Filter getFilter()
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public Layout getLayout()
+    {
+        throw new Error("Unimplemented");
+    }
+
+
+    @Override
+    public String getName()
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public void setLayout(Layout layout)
+    {
+        throw new Error("Unimplemented");
+    }
+
+    @Override
+    public void setName(String name)
+    {
+        throw new Error("Unimplemented");
+    }
+
+    public void setErrorHandler(ErrorHandler errorHandler)
+    {
+        throw new Error("Unimplemented");
+    }
+
+    @Override
+    public Level getLevel()
+    {
+        return minLevel;
+    }
+
+    @Override
     public boolean isConnected()
     {
         if (liveSocket != null && liveSocket.isConnected()) {
@@ -115,6 +178,7 @@ public class DAQLogAppender implements IDAQAppender {
         return false;
     }
 
+    @Override
     public boolean isConnected(String logHost, int logPort,
                                String liveHost, int livePort)
     {
@@ -127,6 +191,7 @@ public class DAQLogAppender implements IDAQAppender {
         return false;
     }
 
+    @Override
     public void reconnect()
         throws SocketException
     {
@@ -138,6 +203,7 @@ public class DAQLogAppender implements IDAQAppender {
         }
     }
 
+    @Override
     public String toString()
     {
         return "DAQLogAppender[" + liveSocket + "+" + logSocket + "@" +

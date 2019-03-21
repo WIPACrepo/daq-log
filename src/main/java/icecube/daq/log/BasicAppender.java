@@ -50,6 +50,7 @@ public class BasicAppender
     /**
      * Unimplemented.
      */
+    @Override
     public void clearFilters()
     {
         throw new Error("Unimplemented");
@@ -58,6 +59,7 @@ public class BasicAppender
     /**
      * Nothing needs to be done here.
      */
+    @Override
     public void close()
     {
         // don't need to do anything
@@ -118,6 +120,7 @@ public class BasicAppender
      *
      * @return lowest leel of messages which will be logged
      */
+    @Override
     public Level getLevel()
     {
         return minLevel;
@@ -128,6 +131,7 @@ public class BasicAppender
      *
      * @return ???
      */
+    @Override
     public String getName()
     {
         throw new Error("Unimplemented");
@@ -138,6 +142,7 @@ public class BasicAppender
      *
      * @return <tt>true</tt>
      */
+    @Override
     public boolean isConnected(String logHost, int logPort, String liveHost,
                                int livePort)
     {
@@ -149,6 +154,7 @@ public class BasicAppender
      *
      * @return <tt>true</tt>
      */
+    @Override
     public boolean isConnected()
     {
         return true;
@@ -157,6 +163,7 @@ public class BasicAppender
     /**
      * No need to reconnect to System.out, so this method does nothing.
      */
+    @Override
     public void reconnect()
     {
         // do nothing
@@ -167,6 +174,7 @@ public class BasicAppender
      *
      * @return ???
      */
+    @Override
     public boolean requiresLayout()
     {
         throw new Error("Unimplemented");
@@ -197,6 +205,7 @@ public class BasicAppender
      *
      * @param name ???
      */
+    @Override
     public void setName(String name)
     {
         throw new Error("Unimplemented");

@@ -50,20 +50,36 @@ public class DAQLogHandler
     /* (non-API documentation)
      * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
      */
-    public void publish(LogRecord rec) {
+    public void publish(LogRecord rec)
+    {
         if (isLoggable(rec)) {
             String threadName = "Thread#" + rec.getThreadID();
+
+            String level;
+            if (rec.getLevel() == null) {
+                level = "UNKNOWN";
+            } else {
+                level = rec.getLevel().toString();
+            }
+
+            String msg;
+            if (rec.getMessage() == null) {
+                msg = "";
+            } else {
+                msg = rec.getMessage().toString();
+            }
+
             Calendar now = Calendar.getInstance();
             now.setTime(new Date(rec.getMillis()));
+
             if (liveSocket != null) {
                 liveSocket.write(rec.getLoggerName(), threadName,
-                                 rec.getLevel().toString(), now,
-                                 rec.getMessage(), rec.getThrown());
+                                 level, now, msg, rec.getThrown());
             }
+
             if (logSocket != null) {
                 logSocket.write(rec.getLoggerName(), threadName,
-                                rec.getLevel().toString(), now,
-                                rec.getMessage(), rec.getThrown());
+                                level, now, msg, rec.getThrown());
             }
         }
     }
@@ -71,14 +87,18 @@ public class DAQLogHandler
     /* (non-API documentation)
      * @see java.util.logging.Handler#flush()
      */
-    public void flush() {
+    @Override
+    public void flush()
+    {
         // nothing to flush
     }
 
     /* (non-API documentation)
      * @see java.util.logging.Handler#close()
      */
-    public void close() throws SecurityException {
+    @Override
+    public void close() throws SecurityException
+    {
         if (liveSocket != null) {
             liveSocket.close();
         }

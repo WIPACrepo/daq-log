@@ -20,6 +20,7 @@ public class LiveLoggingSocketTest
         return new TestSuite(LiveLoggingSocketTest.class);
     }
 
+    @Override
     protected void setUp()
     {
         try {
@@ -31,6 +32,7 @@ public class LiveLoggingSocketTest
         logSock = null;
     }
 
+    @Override
     protected void tearDown()
     {
         if (logSock != null) {

@@ -34,7 +34,9 @@ class LogReader
 
     void addExpected(String msg)
     {
-        expList.add(msg);
+        synchronized (expList) {
+            expList.add(msg);
+        }
     }
 
     void close()
@@ -78,6 +80,7 @@ class LogReader
         {
         }
 
+        @Override
         public void run()
         {
             running = true;
@@ -101,15 +104,22 @@ class LogReader
                 }
 
                 String errMsg = null;
-                if (expList.isEmpty()) {
-                    errMsg = "Got unexpected " + name + " message: " + fullMsg;
-                } else {
-                    String expMsg = expList.remove(0);
-                    if (!fullMsg.startsWith(expMsg) &&
-                        !fullMsg.endsWith(expMsg))
-                    {
-                        errMsg = "Expected " + name + " \"" + expMsg +
-                            "\", got \"" + fullMsg + "\"";
+                if (fullMsg == null) {
+                    errMsg = "fullMsg is null";
+                } else synchronized (expList) {
+                    if (expList.isEmpty()) {
+                        errMsg = "Got unexpected " + name + " message: " +
+                            fullMsg;
+                    } else {
+                        String expMsg = expList.remove(0);
+                        if (expMsg == null) {
+                            errMsg = "expMsg is null";
+                        } else if (!fullMsg.startsWith(expMsg) &&
+                                   !fullMsg.endsWith(expMsg))
+                        {
+                            errMsg = "Expected " + name + " \"" + expMsg +
+                                "\", got \"" + fullMsg + "\"";
+                        }
                     }
                 }
 
