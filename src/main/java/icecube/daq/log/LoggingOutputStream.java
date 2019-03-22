@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
 
 /**
  * An OutputStream that writes contents to a Log upon each call to flush()
@@ -62,7 +62,17 @@ public class LoggingOutputStream
                     STDERR.println(record);
                     STDERR.println("WARNING!  LoggingOutputStream is looping");
                 }
-                logger.log(level, record);
+                if (level.isGreaterOrEqual(Level.FATAL)) {
+                    logger.fatal(record);
+                } else if (level.isGreaterOrEqual(Level.ERROR)) {
+                    logger.error(record);
+                } else if (level.isGreaterOrEqual(Level.WARN)) {
+                    logger.warn(record);
+                } else if (level.isGreaterOrEqual(Level.INFO)) {
+                    logger.info(record);
+                } else {
+                    logger.debug(record);
+                }
             }
         }
     }
